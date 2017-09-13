@@ -101,7 +101,7 @@ retailPriceForNine
 
 And if you type the `manufacturePrice` into the console, you will see that it is not defined in the current global scope.  Yet, somehow, when we execute this `retailPriceForNine` function it knows that the `manufacturePrice` is 9.  It knows this, even though `retailPriceForNine` points to a function that does not have the variable defined in its execution scope.  So how does the function have a value for `manufacturePrice`?  Placing a debugger into our code and running it in our chrome console show us.  
 
-<!-- Display Screen Shot Here -->
+![curriculum](https://curriculum-content.s3.amazonaws.com/web-development/js/advanced-scope/closures-readme/chrome-debugger-closures.png)
 
 We see that `manufacturePrice` price is defined because of a closure.  A closure is the attribute that all JavaScript functions have: *JavaScript functions hold onto the scope that they had when they were declared*.  Let's take a look at our code again to see how we made use of a closure.  
 
