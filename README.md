@@ -34,7 +34,7 @@ As you may have seen, JavaScript gives us mechanisms to construct objects with a
   // 10
 ```
 
-In the code above, we use a class constructor to create different objects.  The objects share behavior and vary in their data.  Each item is a different `manufacturePrice`.  The market multiplier represents the varying difference in price for different products.  For example, we multiply our `tennisShoe` by `1.5` to accommodate for our New York market.  In a suburban market, the marketMultiplier of our `tshirt` is `1`, or not marked up.  
+In the code above, we use a class constructor to create different objects.  The objects share behavior and vary in their data.  Each item has a different `manufacturePrice`.  The `marketMultiplier` represents the varying difference in price for different markets.  For example, above our `tennisShoe` by `1.5` to accommodate for our New York and LA markets.  In our suburban market, the `marketMultiplier` of our `tshirt` is `1`, or not marked up.  
 
 What may be surprising is that in JavaScript, we can also create **functions** that share specific capabilities but change others.  So just like we can create objects as little units of work, we can also create functions.
 
@@ -42,7 +42,7 @@ How do you create a function?  It's not too difficult, we simply return a functi
 
 ```js
   function retailPriceMaker(manufacturePrice){
-    return function(manufacturePrice, marketMultiplier){
+    return function(marketMultiplier){
       return marketMultiplier * manufacturePrice;
     }
   }
@@ -51,17 +51,17 @@ How do you create a function?  It's not too difficult, we simply return a functi
   // "function"
 ```
 
-Let's pay careful attention to what happened in the above code.  We declared a function `retailPriceMaker` whose return value is a function itself.  The returned function takes arguments of  `manufacturePrice` and `marketMultiplier` and returns a retail price that is a function of the two.  
+Let's pay careful attention to what happened in the above code.  We declared a function `retailPriceMaker` whose return value is a function itself.  The returned function takes an argument of  `manufacturePrice` and references `marketMultiplier` (which is in its scope) and returns a retail price that is a function of the two.  
 
 ```javascript
-  let retailPriceForTen = retailPriceMaker(10)
+  const retailPriceForTen = retailPriceMaker(10)
   // the execution of retailPriceMaker returns a function that takes one argument
-  // We assign this returned function to a variable called retailPrice, and then can call the returned function by referencing retailPriceForManufactureTen
+  // We assign this returned function to a variable called retailPriceForTen, and then can call the returned function by referencing retailPriceForTen
   retailPriceForTen(1.5)
   // 15
 ```
 
-Ok, so why would we want to do such a thing?  Well just like we have objects that we want configured in a special way, where we know some data at one time, but want to execute a method on the object at a different time, the same thing occurs with functions.  Let's explore another example.  Imagine we believe the manufacture price of an item will be 20, and we want to experiment with it's price in different markets.  
+Ok, so why would we want to do such a thing?  Well, just like we have objects that we want configured in a special way, where we know some data at one time, but want to execute a method on the object at a different time, the same thing occurs with functions.  Let's explore another example.  Imagine we believe the `manufacturePrice` of an item will be 3, and we want to experiment with it's price in different markets.  
 
 ```javascript
 function retailPriceMaker(manufacturePrice){
@@ -70,7 +70,7 @@ function retailPriceMaker(manufacturePrice){
   }
 }
 
-let retailPriceForThree = retailPriceMaker(3)
+const retailPriceForThree = retailPriceMaker(3)
 
 retailPriceForThree(1.1)
 // 3.3
@@ -79,9 +79,9 @@ retailPriceForThree(1.5)
 // 4.5
 ```
 
-So now, by invoking `retailPriceMaker` we return a function that has it's own unique attribute of a `manufacturePrice`.  And we use this attribute at a later time.  So just like we earlier defined a `Item` class that has it's `manufacturePrice`, here we avoided all of that code by just directly giving this function knowledge of `manufacturePrice`.  So in JavaScript, functions can hold onto state in the same way that objects can.  This makes sense, as functions are first class objects.
+So now, by invoking `retailPriceMaker` we return a function that has it's own unique attribute of a `manufacturePrice`.  And we use this attribute at a later time.  So just like we earlier defined a `Item` class returns objects with a `manufacturePrice`, here we defined a function that returns functions that has a `manufacturePrice`.  The difference is we avoided a lot of code of declaring a class by just giving this function knowledge of `manufacturePrice`.  So in JavaScript, functions can hold onto state in the same way that objects can.  This makes sense, as functions are first class objects.
 
-Let's take a deeper look as to what is happening in the code. Look at the code again, below. As you see, `retailPriceForThree` points to our returned JavaScript function.  If you type `retailPriceForThree` into the console you will see that function.
+Ok, now let's take an even deeper look as to what is happening in the code. Look at the code again, below. As you see, `retailPriceForNine` points to our returned JavaScript function.  If you type `retailPriceForNine` into the console you will see that function.
 
 ```js
 
@@ -91,19 +91,19 @@ function retailPriceMaker(manufacturePrice){
   }
 }
 
-let retailPriceForNine = retailPriceMaker(9)
+const retailPriceForNine = retailPriceMaker(9)
 
 retailPriceForNine
 // ƒ (marketType){
-// return marketMultiplier * manufacturePrice;
-//     }  
+//  return marketMultiplier * manufacturePrice;
+// }  
 ```
 
-And if you type the `manufacturePrice` into the console, you will see that it is not defined in the current global scope.  Yet, somehow, when we execute this `retailPriceForNine` function it knows that the `manufacturePrice` is 9.  It knows this, even though `retailPriceForNine` points to a function that does not have either variable defined in its execution scope.  So how does the function have values for length and manufacturePrice?  Placing a debugger into our code and running it in our chrome console show us.  
+And if you type the `manufacturePrice` into the console, you will see that it is not defined in the current global scope.  Yet, somehow, when we execute this `retailPriceForNine` function it knows that the `manufacturePrice` is 9.  It knows this, even though `retailPriceForNine` points to a function that does not have the variable defined in its execution scope.  So how does the function have a value for `manufacturePrice`?  Placing a debugger into our code and running it in our chrome console show us.  
 
 <!-- Display Screen Shot Here -->
 
-`manufacturePrice` price is defined because of a closure.  A closure is the attribute that all JavaScript functions have: *JavaScript functions hold onto the scope that they had when they were declared*.  Let's take a look at our code again to see how we made use of a closure.  
+We see that `manufacturePrice` price is defined because of a closure.  A closure is the attribute that all JavaScript functions have: *JavaScript functions hold onto the scope that they had when they were declared*.  Let's take a look at our code again to see how we made use of a closure.  
 
 ```javascript
 function retailPriceMaker(manufacturePrice){
@@ -112,15 +112,15 @@ function retailPriceMaker(manufacturePrice){
   }
 }
 
-let retailPriceForNine = retailPriceMaker(9)
+const retailPriceForNine = retailPriceMaker(9)
 
-retailPriceForNine(3)
-// 27
+retailPriceForNine(2)
+// 18
 ```
 
-So every time we execute the `retailPriceMaker` function we are declaring a new function.  That's what our `retailPriceMaker` function does: declare a function that it then returns.  And when that function is declared, manufacturePrice is in scope.  So it doesn't matter that manufacturePrice price is not in scope when we later execute a function.  There is a closure such that the function that `retailPriceMaker` returns holds onto the scope it was declared with.  This becomes a very powerful feature in JavaScript.  Closures allow us to  build functions that have their own capabilities.  
+So every time we execute the `retailPriceMaker` function we are declaring a new function.  That's what our `retailPriceMaker` function does: declare a function that it then returns.  And when that function is declared, `manufacturePrice` is in scope.  So it doesn't matter that `manufacturePrice` is not in scope when we later execute a function.  There is a closure such that the function that `retailPriceMaker` returns holds onto the scope it was declared with.  This becomes a very powerful feature in JavaScript.  Closures allow us to build functions that have their own capabilities.  
 
-So just like we can return a function called `retailPriceForNine` and then see the `retailPrice` returned with various marketTypes passed through, we can construct another function called `retailPriceForSixteen` for say a different Item.
+So just like we can return a function called `retailPriceForNine` and then see the `retailPrice` returned with various `marketMultiplier`s passed through, we can construct another function called `retailPriceForSixteen` for say a different Item.
 
 ```js
 function retailPriceMaker(manufacturePrice){
@@ -129,9 +129,9 @@ function retailPriceMaker(manufacturePrice){
   }
 }
 
-let retailPriceForNine = retailPriceMaker(9)
+const retailPriceForNine = retailPriceMaker(9)
 
-let retailPriceForSixteen = retailPriceMaker(16)
+const retailPriceForSixteen = retailPriceMaker(16)
 
 retailPriceForNine(2)
 // 18
@@ -178,11 +178,13 @@ So here, our returned functions provides some capability that JavaScript objects
    }
  }
 
- let retailPriceForNine = retailPriceMaker(9)
+ const retailPriceForNine = retailPriceMaker(9)
  retailPriceForNine(3)
 ```
 
-Because JavaScript classes are just syntactic sugar for functions, we can use closures with our classes as well.  When would we want to do this?  Let's modify our Item class a little.
+Here, once we invoke our `retailPriceMaker` to return the `retailPriceForNine` function, we can never change that `manufacturePrice`.  
+
+Another use case for closures occurs when we declare our classes.  Because JavaScript classes are just syntactic sugar for functions, we can use closures with our classes as well.  When would we want to do this?  Let's modify our Item class a little.
 
 ```js
 
@@ -199,7 +201,7 @@ class Item {
 }
 ```
 
-As you see in the above code, we need to declare our `ItemId` variable outside of our class.  We do so because classes do not allow for private variables, only public methods.  Yet we want a variable the Item constructor can reference.  The problem is that `ItemId` and everything else can reference it as well.  Let's change that.  
+As you see in the above code, we need to declare our `ItemId` variable outside of our class.  We do so because classes do not allow for private variables, only public methods.  Yet we want a variable the `Item` constructor can reference.  The problem is that `ItemId` and everything else can reference it as well.  Let's change that.  
 
 ```js
 
@@ -223,15 +225,15 @@ const Item = createItem()
 // Execute createItem and assign the returned class to equal Item.
 // We only need to call createItem() one time in our codebase.
 
-let tennisShoe = new Item(3, 3)
-// {id: 1, length: 3, manufacturePrice: 3}
+let tennisShoe = new Item('tennis shoe', 15)
+// {id: 1, name: 'tennis shoe', manufacturePrice: 15}
 
-let diningItem = new Item(4, 3)
-// {id: 2, length: 4, manufacturePrice: 3}
+let tshirt = new Item('t shirt', 8)
+// {id: 2, name: 't shirt', manufacturePrice: 8}
 
 ```
 
-The above code may look complicated, but our only change is to wrap the code in a function called `createItem`.  The `createItem` function encapsulates all of the code declared inside of it.  This prevents the `ItemId` variable from being accessible outside of the `createItem` function.  It also privatizes the Item class, so we make sure that we return that class from our `createItem` function.  Now when we execute the `createItem`, we assign the return value of the class to equal a constant called `Item`.  So `Item` now points to our class, and we can call `new Item` to construct a new instance of this class.  Our use of closures comes into play every time we call `new Item()`.  When we construct a new instance, the constructor method references and modifies the `ItemId` variable.  Our constructor method can do so because when it's class was declared `ItemId` was accessible, and the class holds onto the variables in scope when it was declared.  So using closures allows to construct a class that has access to variables that are only available to functions that referenced the variable when the functions were declared.  Thus it allows us to better create the scope that we want for ItemId.
+The above code may look complicated, but our only change is to wrap the code in a function called `createItem`.  The `createItem` function encapsulates all of the code declared inside of it.  This prevents the `ItemId` variable from being accessible outside of the `createItem` function.  It also privatizes the `Item` class, so we make sure that we return that class from our `createItem` function.  Now when we execute the `createItem` function, we assign the return value of the class to equal a constant called `Item`.  So `Item` now points to our class, and we can call `new Item` to construct a new instance of this class.  Our use of closures comes into play every time we call `new Item()`.  When we construct a new instance, the constructor method references and modifies the `ItemId` variable.  Our constructor method can do so because when it's class was declared `ItemId` was accessible, and the class holds onto the variables in scope when it was declared.  So using closures allows to construct a class that has access to variables that are only available to functions that referenced the variable when the functions were declared.  Thus it allows us to better create the scope that we want for `ItemId`.
 
 ### Summary
 
