@@ -19,7 +19,7 @@ As you may have seen, JavaScript gives us mechanisms to construct objects with a
       this.manufacturePrice = manufacturePrice
     }
     retailPrice(marketMultiplier){
-      return marketMultiplier * manufacturePrice;
+      return marketMultiplier * this.manufacturePrice;
     }
   }
 
