@@ -51,7 +51,7 @@ How do you create a function?  It's not too difficult, we simply return a functi
   // "function"
 ```
 
-Let's pay careful attention to what happened in the above code.  We declared a function `retailPriceMaker` whose return value is a function itself.  The returned function takes an argument of  `manufacturePrice` and references `marketMultiplier` (which is in its scope) and returns a retail price that is a function of the two.  
+Let's pay careful attention to what happened in the above code.  We declared a function `retailPriceMaker` whose return value is a function itself.  The returned function takes an argument of  `marketMultiplier` and references `manufacturePrice` (which is in its scope) and returns a retail price that is a function of the two.  
 
 ```javascript
   const retailPriceForTen = retailPriceMaker(10)
