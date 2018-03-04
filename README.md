@@ -94,7 +94,7 @@ function retailPriceMaker(manufacturePrice){
 const retailPriceForNine = retailPriceMaker(9)
 
 retailPriceForNine
-// ƒ (marketType){
+// ƒ (marketMultiplier){
 //  return marketMultiplier * manufacturePrice;
 // }  
 ```
@@ -124,7 +124,7 @@ So just like we can return a function called `retailPriceForNine` and then see t
 
 ```js
 function retailPriceMaker(manufacturePrice){
-  return function(marketType){
+  return function(marketMultiplier){
     return marketMultiplier * manufacturePrice;
   }
 }
@@ -151,13 +151,13 @@ So here, our returned functions provides some capability that JavaScript objects
 ```js
 
   class Item {
-    constructor(manufacturePrice, marketType){
+    constructor(name, manufacturePrice){
       this.name = name
       this.manufacturePrice = manufacturePrice
     }
-    retailPrice(marketType){
+    retailPrice(marketMultiplier){
       let manufacturePrice;
-      return function(marketType){
+      return function(marketMultiplier){
         return marketMultiplier * manufacturePrice;
       }
     }
@@ -173,13 +173,14 @@ So here, our returned functions provides some capability that JavaScript objects
 
  ```js
  function retailPriceMaker(manufacturePrice){
-   return function(marketType){
+   return function(marketMultiplier){
      return marketMultiplier * manufacturePrice
    }
  }
 
  const retailPriceForNine = retailPriceMaker(9)
  retailPriceForNine(3)
+ // 27
 ```
 
 Here, once we invoke our `retailPriceMaker` to return the `retailPriceForNine` function, we can never change that `manufacturePrice`.  
@@ -190,12 +191,12 @@ Another use case for closures occurs when we declare our classes.  Because JavaS
 
 let ItemId = 0
 class Item {
-  constructor(manufacturePrice){
+  constructor(name, manufacturePrice){
     this.name = name
     this.manufacturePrice = manufacturePrice
     this.id = ++ItemId;
   }
-  retailPrice(marketType){
+  retailPrice(marketMultiplier){
     return marketMultiplier * manufacturePrice
   }
 }
@@ -209,13 +210,13 @@ function createItem(){
   let ItemId = 0
   // return the class
   return class {
-    constructor(manufacturePrice){
+    constructor(name, manufacturePrice){
       this.name = name
       this.manufacturePrice = manufacturePrice
       this.id = ++ItemId;
     }
 
-    retailPrice(marketType){
+    retailPrice(marketMultiplier){
       return marketMultiplier * manufacturePrice;
     }
   }
@@ -230,6 +231,9 @@ let tennisShoe = new Item('tennis shoe', 15)
 
 let tshirt = new Item('t shirt', 8)
 // {id: 2, name: 't shirt', manufacturePrice: 8}
+
+tennisShoe.retailPrice(2)
+// 30
 
 ```
 
